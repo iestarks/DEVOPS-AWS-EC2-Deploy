@@ -1,6 +1,5 @@
-resource "aws_iam_policy" "policy" {
-  name        = "test-policy"
+resource "aws_iam_policy" "ec2-cf-policy" {
   description = "A test policy"
-  policy      = file("assumerolepolicy.json")
+  policy      = "${file("policy_ec2.json")}"
 }
 

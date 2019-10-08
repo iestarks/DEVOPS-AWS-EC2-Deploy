@@ -1,15 +1,10 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
-resource "aws_instance" "role-test" {
-  ami                  = "ami-0dbbd6f952e12feba"
+resource "aws_instance" "test-instance" {
+  ami                  = "${lookup(var.code, var.region)}"
   instance_type        = "t2.micro"
-  iam_instance_profile = aws_iam_instance_profile.test_profile.name
+  iam_instance_profile = "${aws_iam_instance_profile.test_profile.name}"
   key_name             = "ansiblekey"
 
   tags = {
     Name = "test-instance"
   }
 }
-
