@@ -1,17 +1,15 @@
-
-variable "AWS_ACCESS_KEY" {}
-variable "AWS_SECRET_KEY" {}
-
 provider "aws" {
-        region = "us-east-1"
-        access_key = "${var.AWS_ACCESS_KEY}"
-        secret_key = "${var.AWS_SECRET_KEY}"
+  region = "us-east-1"
 }
 
-resource "aws_instance" "example" {
-        ami = "ami-0dbbd6f952e12feba"
-        instance_type = "t2.micro"
-        iam_instance_profile = "${aws_iam_instance_profile.ec2-role.name}"
-        key_name = "ansiblekey"
+resource "aws_instance" "role-test" {
+  ami                  = "ami-0dbbd6f952e12feba"
+  instance_type        = "t2.micro"
+  iam_instance_profile = aws_iam_instance_profile.test_profile.name
+  key_name             = "ansiblekey"
+
+  tags = {
+    Name = "test-instance"
+  }
 }
 

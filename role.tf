@@ -1,4 +1,3 @@
-
 resource "aws_iam_role" "ec2-role" {
   name = "ec2-role"
 
@@ -17,17 +16,17 @@ resource "aws_iam_role" "ec2-role" {
   ]
 }
 EOF
-}
 
+}
 
 resource "aws_iam_instance_profile" "ec2-role" {
   name = "ec2-role"
-  role = "${aws_iam_role.ec2-role.name}"
+  role = aws_iam_role.ec2-role.name
 }
 
 resource "aws_iam_role_policy" "ec2-_role_policy" {
-  name = "ec2-role_policy"
-  role = "${aws_iam_role.ec2-role.id}"
+  name   = "ec2-role_policy"
+  role   = aws_iam_role.ec2-role.id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -42,16 +41,6 @@ resource "aws_iam_role_policy" "ec2-_role_policy" {
   ]
 }
 EOF
+
 }
-
-
-
-
-
-
-
-
-
-
-
 
