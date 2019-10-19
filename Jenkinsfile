@@ -1,10 +1,10 @@
 node {
-    stage 'Stage 1'
-       echo 'Hello World 1'
-    stage 'Stage 2'
-       echo 'Hello World 2'
-    stage 'Stage 3'
-       echo 'Hello World 3'
-    stage 'Stage 4'
-       echo 'Hello World 4'
+    jobDsl scriptText: 'job("example-2")'
+
+    jobDsl targets: ['jobs/projectA/*.groovy', 'jobs/common.groovy'].join('\n'),
+           removedJobAction: 'DELETE',
+           removedViewAction: 'DELETE',
+           lookupStrategy: 'SEED_JOB',
+           additionalClasspath: ['libA.jar', 'libB.jar'].join('\n'),
+           additionalParameters: [message: 'Hello from pipeline', credentials: 'SECRET']
 }
