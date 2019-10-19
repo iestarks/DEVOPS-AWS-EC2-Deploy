@@ -1,65 +1,41 @@
-#!groovy
-import groovy.json.JsonOutput
+pipeline {
 
-node {
-    // pull request or feature branch
-    if  (env.GITHUB_REF != 'refs/heads/master') {
-        checkoutSource()
-        build()
-        unitTest()
-    } // master branch / production
-    else {
-        checkoutSource()
-        build()
-        allTests()
-        createRelease("${env.GITHUB_ACTION}-${env.GITHUB_SHA}")
-    }
-}
+  agent any
 
-def createRelease(name) {
-  stage ('createRelease') {
-        def payload = JsonOutput.toJson(["tag_name": "v-${name}", "name": "GitHub Action triggered release: ${name}", "body": "This release has been created with the help of a Jenkins single-shot master running inside of a GitHub Action. For more details visit https://github.com/jonico/jenkinsfile-runner-github-actions"])
-        def apiUrl = "https://api.github.com/repos/${env.GITHUB_REPOSITORY}/releases"
-        mysh("curl -s --output /dev/null -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}")
-    }
-}
-
-// prevent output of secrets and a globbing patterns by Jenkins
-def mysh(cmd) {
-    sh('#!/bin/sh -e\n' + cmd)
-}
-
-def checkoutSource() {
-  stage ('checkoutSource') {
-    // as the commit that triggered that Jenkins action is already mapped to /github/workspace, we just copy that to the workspace
-    copyFilesToWorkSpace()
+  environment {
+    SVC_ACCOUNT_KEY = credentials('terraform-auth')
   }
-}
 
-def copyFilesToWorkSpace() {
-  mysh "cp -r /github/workspace/* $WORKSPACE"
-}
+  stages {
 
-def build () {
-    stage ('Build') {
-      mvn 'clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -B -V'
+    stage('Checkout') {
+      steps {
+        checkout scm
+        sh 'mkdir -p creds' 
+        sh 'echo $SVC_ACCOUNT_KEY | base64 -d > ./creds/serviceaccount.json'
+      }
     }
-}
 
-
-def unitTest() {
-    stage ('Unit tests') {
-      mvn 'test -B -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true'
+    stage('TF Plan') {
+      steps {
+        container('terraform') {
+          sh 'terraform init'
+          sh 'terraform plan -out myplan'
+        }
+      }      
     }
-}
 
-def allTests() {
-    stage ('All tests') {
-      // don't skip anything
-      mvn 'test -B'
+    stage('Approval') {
+      steps {
+        script {
+          def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+        }
+      }
     }
-}
 
-def mvn(args) {
-    sh "mvn ${args} -Dmaven.repo.local=/github/workspace/.m2"
-}
+    stage('TF Apply') {
+      steps {
+        container('terraform') {
+          sh 'terraform apply -input=false myplan'
+        }
+      }
