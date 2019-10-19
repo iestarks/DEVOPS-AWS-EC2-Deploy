@@ -1,4 +1,7 @@
 
+#!/usr/bin/env groovy
+infraPipeline()
+
 node {
    stage 'checkout'
         checkout scm
