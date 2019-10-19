@@ -1,43 +1,26 @@
 
-  
-pipeline {   
-  agent {
-    node {
-      label 'master'
-    }  
-  }
-  stages {
-    stage('checkout') {
-      steps {
+node {
+   stage 'checkout'
         checkout scm
-        sh 'docker pull hashicorp/terraform:light'
-      }
-    }
-    stage('init') {
-      steps {
-        sh 'docker run -w /app -v /root/.aws:/root/.aws -v `pwd`:/app hashicorp/terraform:light init'
-      }
-    }
-    stage('plan') {
-      steps {
-        sh 'docker run -w /app -v /root/.aws:/root/.aws -v `pwd`:/app hashicorp/terraform:light plan'
-      }
-    }
-    stage('approval') {
-      options {
-        timeout(time: 1, unit: 'HOURS') 
-      }
-      steps {
-        input 'approve the plan to proceed and apply'
-      }
-    }
-    stage('apply') {
-      steps {
-        sh 'docker run -w /app -v /root/.aws:/root/.aws -v `pwd`:/app hashicorp/terraform:light apply -auto-approve'
-        cleanWs()
-      }
-    }
-  }
+
+   stage 'test'
+        parallel (
+            phase1: { sh "echo p1; sleep 20s; echo phase1" },
+            phase2: { sh "echo p2; sleep 40s; echo phase2" }
+        )
+   stage name: 'build', concurrency: 1
+        sh "packer build project.json"
+
+   stage name: 'plan', concurrency: 1
+        sh "terraform plan --out plan"
+
+   stage name: 'deploy', concurrency: 1
+        def deploy_validation = input(
+            id: 'Deploy',
+            message: 'Let\'s continue the deploy plan',
+            type: "boolean")
+
+        sh "terraform apply plan"
 }
 
   
