@@ -1,0 +1,16 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_s3_bucket" "irv_s3_bucket" {
+  bucket = "irv-s3-terraform-bucket"
+  acl = "private"
+  versioning {
+    enabled = true
+  }
+
+  tags {
+    Name = "irv-s3-terraform-bucket"
+  }
+
+}
