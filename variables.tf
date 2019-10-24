@@ -22,10 +22,6 @@ resource "aws_s3_bucket" "example" {
 
 }
 
-
-
-
-
 variable "code"{
 type = "map"
 default = { 
