@@ -7,7 +7,7 @@ provider "aws" {
   region = "us-east-1"
 
   assume_role {
-    role_arn     = "arn:aws:iam::039168849899:role/Ansible"
+    role_arn = "arn:aws:iam::039168849899:role/Ansible"
   }
   
   }
