@@ -5,7 +5,12 @@ provider "aws" {
   skip_requesting_account_id = true
   skip_metadata_api_check = true
   region = "us-east-1"
-}
+
+  assume_role {
+    role_arn     = "arn:aws:iam::039168849899:role/Ansible"
+  }
+  
+  }
 
 variable "region" {
   default = "us-east-1"
