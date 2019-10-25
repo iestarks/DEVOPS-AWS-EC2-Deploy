@@ -6,10 +6,6 @@ provider "aws" {
   skip_metadata_api_check = true
   region = "us-east-1"
 
-  assume_role {
-    role_arn = "arn:aws:iam::039168849899:role/Ansible"
-  }
-  
   }
 
 variable "region" {
