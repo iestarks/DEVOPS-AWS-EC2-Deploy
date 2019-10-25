@@ -5,11 +5,9 @@
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "ec2.amazonaws.com"
-         "Resource": "arn:aws:iam::039168849899:role/Ansible"
       },
       "Effect": "Allow",
       "Sid": ""
-     
     }
   ]
 }
