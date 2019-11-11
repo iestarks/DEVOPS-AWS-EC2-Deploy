@@ -7,9 +7,13 @@ The EC2.tf provides the code for the creation of the Win2019 EC2 instance.
 
 To execute the api call to AWS to create the EC2 instance, perform the following from your Terraform working directory.
 
-Terraform init
-Terraform plan
-Terraform apply
+-- Terraform init
+---
+-- Terraform plan
+---
+--- Terraform apply
+----
 
 This is to test -github update
+
 This is another test
