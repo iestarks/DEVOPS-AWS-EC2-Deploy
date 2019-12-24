@@ -4,14 +4,8 @@ provider "aws" {
   skip_credentials_validation = true
   skip_requesting_account_id = true
   skip_metadata_api_check = true
-  region = "us-east-1"
-
-  }
-
-variable "region" {
-  default = "us-east-1"
-}
-
+  region = "us-east-1" 
+ }
 
 resource "aws_s3_bucket" "example" {
   bucket = "irv-s3-terraform-bucket"
@@ -23,10 +17,33 @@ resource "aws_s3_bucket" "example" {
 
 }
 
-variable "code"{
+variable "region" {
+
+default = "us-east-1"
+
+}
+
+
+variable "code" {
 type = "map"
 default = { 
-        us-east-1 = "ami-0dbbd6f952e12feba"
+        us-east-1 = "ami-04b9e92b5572fa0d1"
 }
 description = "Test EC2 build for us-east-1"
 }
+
+//variable "vpc_id" {}
+
+//data "aws_vpc" "selected" {
+  //id = "${var.vpc_id}"
+//}
+
+//resource "aws_subnet" "starks_vpc_subnet" {
+  //vpc_id            = "${data.aws_vpc.selected.id}"
+  //availability_zone = "us-east-1a"
+  //cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, 4, 1)}"
+//}
+
+
+
+

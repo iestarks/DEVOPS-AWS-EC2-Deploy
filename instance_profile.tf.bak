@@ -1,0 +1,11 @@
+resource "aws_instance" "aws_instance" {
+  ami           = "${data.aws_ami.amazon-ecs-optimized.id}"
+  instance_type = "${data.terraform_remote_state.output.instance_type}"
+  key_name      = "${data.terraform_remote_state.output.key_name}"
+  iam_instance_profile = "${aws_iam_role.aws_iam_role.name}"
+  availability_zone = "${aws_ebs_volume.aws_ebs_volume.availability_zone}"
+  vpc_security_group_ids = ["${module.aws_security_group.id}"]
+  tags {
+    "Name" = "${var.name}"
+  }
+}
