@@ -7,7 +7,7 @@ provider "aws" {
   region = "us-east-1" 
  }
 
-resource "aws_s3_bucket" "example" {
+resource "aws_s3_bucket" "aws_storage" {
   bucket = "irv-s3-terraform-bucket"
   acl = "private"
   versioning {
@@ -29,7 +29,7 @@ type = "map"
 default = { 
         us-east-1 = "ami-04b9e92b5572fa0d1"
 }
-description = "Test EC2 build for us-east-1"
+description = "OC master for us-east-1"
 }
 
 //variable "vpc_id" {}

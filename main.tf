@@ -5,6 +5,6 @@ resource "aws_instance" "aws_ec2_testinstance" {
   key_name             = "ansiblekey"
 
   tags = {
-    Name = "aws_ec2_testinstance"
+    Name = "aws_ec2_oc_instance"
   }
 }
