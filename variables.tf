@@ -24,19 +24,14 @@ default = "us-east-1"
 }
 
 
-variable "code" {
-type = "map"
-default = { 
-        us-east-1 = "ami-04b9e92b5572fa0d1"
-}
-description = "OC master for us-east-1"
-}
+# variable "code" {
+# type = map
+# default = { 
+#         us-east-1 = "ami-098f16afa9edf40be"
+# }
+# description = "OC master for us-east-1"
+# }
 
-//variable "vpc_id" {}
-
-//data "aws_vpc" "selected" {
-  //id = "${var.vpc_id}"
-//}
 
 //resource "aws_subnet" "starks_vpc_subnet" {
   //vpc_id            = "${data.aws_vpc.selected.id}"
@@ -44,6 +39,34 @@ description = "OC master for us-east-1"
   //cidr_block        = "${cidrsubnet(data.aws_vpc.selected.cidr_block, 4, 1)}"
 //}
 
+# variable "oc_sg" {
+#   description = "The ID of one or more security groups to associate with the network interface for storage group id"
+#   type        = list(string)
+#   default     = []
+# }
+
+variable "name" {
+  description = "Name to be used on all the resources as identifier"
+  type        = string
+  default     = "oc-vpc"
+}
 
 
+# variable "vpc_id" {
+#   description = "ID of the VPC where to create security group"
+#   type        = string
+#   default = ""
+# }
 
+
+ variable "subnet_id" {
+   description = "The VPC Subnet ID to launch in"
+   type        = string
+   default     = ""
+ }
+
+ variable "vpc_security_group_ids" {
+  description = "A list of security group IDs to associate with"
+  type        = list(string)
+  default     = null
+}
