@@ -12,11 +12,11 @@
 
 module "oc_vpc" {
   source = "./modules/terraform-aws-vpc"
-  
+
   name = var.name
   cidr = "10.0.0.0/16"
 
-  azs             = ["us-west-1a", "us-west-1b", "us-west-1c"]
+  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
@@ -40,29 +40,14 @@ module "oc_servers_sg" {
   ingress_cidr_blocks = ["10.0.0.0/16"]
 }
 
-data "aws_subnet" "private_subnet" {
-  name   = "oc-private-subnet"
-  vpc_id = module.oc_vpc.vpc_id
-}
-
-data "aws_instance" "oc_instance" {
-  name = "oc_instance"
-  subnet_id = module.ec2_cluster.subnet_id
-  network_interface = module.ec2_cluster.network_interface
-}
-
-data "aws_security_group" "oc_sg" {
-  name   = "oc-sg"
-  vpc_id = module.oc_vpc.vpc_id
-}
-
-# data "network_interface" "oc_nic" {
-#   network_interface_id  = aws_subnet.private_subnet.id
-#   tags = {
-#     Name = "primary_network_interface"
-#   }
+# data "aws_instance" "oc_instance"{
+#   subnet_id  = aws_instance.oc_instance.subnet_id
 # }
 
+
+# data "aws_security_group" "oc_sg_name_prefix" {
+# name_prefix = aws_security_group.oc_sg_name_prefix
+# }
 
 module "ec2_cluster" {
   source                 = "./modules/terraform-aws-ec2-instance"
@@ -75,13 +60,12 @@ module "ec2_cluster" {
   instance_type          = "t2.micro"
   key_name               = "ansiblekey"
   monitoring             = true
-  vpc_security_group_ids = data.aws_security_group.oc_sg.id
-  subnet_id              = data.aws_instance.oc_instance.subnet_id
-  network_interface      = data.aws_instance.oc_instance.network_interface 
-
+  vpc_security_group_ids = ["sg-0ebe64864dac78e21"]
+  #vpc_security_group_ids = data.aws_security_group.oc_sg_name_prefix
+  #subnet_id              = data.aws_instance.oc_instance.subnet_id
+  subnet_id              = "subnet-0a5056feeb3aabe0c"
   tags = {
     Terraform   = "true"
     Environment = "dev"
   }
 }
-

@@ -4,7 +4,7 @@ provider "aws" {
   skip_credentials_validation = true
   skip_requesting_account_id = true
   skip_metadata_api_check = true
-  region = "us-east-1" 
+  region = "us-east-1"
  }
 
 resource "aws_s3_bucket" "aws_storage" {
@@ -26,7 +26,7 @@ default = "us-east-1"
 
 # variable "code" {
 # type = map
-# default = { 
+# default = {
 #         us-east-1 = "ami-098f16afa9edf40be"
 # }
 # description = "OC master for us-east-1"
@@ -52,11 +52,12 @@ variable "name" {
 }
 
 
-# variable "vpc_id" {
-#   description = "ID of the VPC where to create security group"
-#   type        = string
-#   default = ""
-# }
+variable "instance_tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(string)
+  default     = {}
+}
+
 
 
  variable "subnet_id" {
@@ -64,6 +65,19 @@ variable "name" {
    type        = string
    default     = ""
  }
+
+ variable "subnet_ids" {
+   description = "The ID of one or more subnets in which to create a network interface."
+   type        = list(string)
+   default     = []
+ }
+
+ variable "network_interface" {
+   description = "Customize network interfaces to be attached at instance boot time"
+   type        = list(map(string))
+   default     = []
+ }
+
 
  variable "vpc_security_group_ids" {
   description = "A list of security group IDs to associate with"
